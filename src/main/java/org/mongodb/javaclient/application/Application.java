@@ -11,7 +11,7 @@ public class Application {
 
     private static final Logger log = Logger.getLogger(Application.class.getName());
 
-    private static final String DB_NAME = "techgig-demo";
+    private static final String DB_NAME = "tech-gig-demo";
     private static final String TABLE_NAME = "placeholder-table";
 
     public static void main(String... args) throws Exception {
@@ -28,15 +28,12 @@ public class Application {
 
         // 3. Finding data
         DBObject query = buildQuery();
-        DBCursor cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, query);
         log.info("results found");
-        try {
-            while (cursor.hasNext()) {
-                log.info(cursor.next().toString());
-            }
-        } finally {
-            cursor.close();
+        DBCursor cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, query);
+        while (cursor.hasNext()) {
+            log.info(cursor.next().toString());
         }
+        cursor.close();
 
     }
 
@@ -48,10 +45,16 @@ public class Application {
 
         List<DBObject> toReturn = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            toReturn.add(new BasicDBObject("_id", i + 1));
-            Thread.sleep(100l);
+
+            toReturn.add(new BasicDBObject("anotherField", i + 1));
+            Thread.sleep(100L);
         }
 
+        for (int i = 0; i < 100; i++) {
+
+            toReturn.add(new BasicDBObject("oneLast", i + 1));
+            Thread.sleep(100L);
+        }
         // we could handle find as well as remove in bulk operations
         /*builder.find(new BasicDBObject("_id", 1)).updateOne(new BasicDBObject("$set", new BasicDBObject("x", 2)));
         builder.find(new BasicDBObject("_id", 2)).removeOne();

@@ -6,16 +6,16 @@ import org.mongodb.javaclient.client.SingleMongoClient;
 import java.net.UnknownHostException;
 import java.util.List;
 
-public class DataDemo {
+class DataDemo {
 
-    public WriteResult insertData(String dbName, String tableName, DBObject dbObject) throws UnknownHostException {
+    WriteResult insertData(String dbName, String tableName, DBObject dbObject) throws UnknownHostException {
 
         // Accessing the database
         DBCollection collection = getCollection(dbName, tableName);
         return collection.insert(dbObject);
     }
 
-    public BulkWriteResult bulkOperations(String dbName, String tableName, List<DBObject> objectsToInsert) throws UnknownHostException {
+    BulkWriteResult bulkOperations(String dbName, String tableName, List<DBObject> objectsToInsert) throws UnknownHostException {
 
         // Accessing the database
         DBCollection collection = getCollection(dbName, tableName);
@@ -33,7 +33,7 @@ public class DataDemo {
         result = builder.execute();*/
     }
 
-    public DBCursor queryData(String dbName, String tableName, DBObject ref) throws UnknownHostException {
+    DBCursor queryData(String dbName, String tableName, DBObject ref) throws UnknownHostException {
         DBCollection coll = getCollection(dbName, tableName);
         return coll.find(ref);
     }
