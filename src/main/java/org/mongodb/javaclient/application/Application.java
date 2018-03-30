@@ -1,6 +1,7 @@
 package org.mongodb.javaclient.application;
 
-import com.mongodb.*;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,43 +19,41 @@ public class Application {
 
         // 1. Insert Data
         DataDemo dataDemo = new DataDemo();
-        DBObject dbObject = buildDBObject();
-        WriteResult writeResult = dataDemo.insertData(DB_NAME, TABLE_NAME, dbObject);
-        log.info("write result: " + writeResult);
+        Document dbObject = buildDBObject();
+        dataDemo.insertData(DB_NAME, TABLE_NAME, dbObject);
 
         // 2. Bulk operations
-        BulkWriteResult bWriteResult = dataDemo.bulkOperations(DB_NAME, TABLE_NAME, orderedBulkWriteOperation());
-        log.info("bulk write result: " + bWriteResult);
+        dataDemo.bulkOperations(DB_NAME, TABLE_NAME, orderedBulkWriteOperation());
 
         // 3. Finding data
-        DBObject query = buildQuery();
+        MongoCursor<Document> cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, new Document().append("lastName", "Dadhich"));
         log.info("results found");
-        DBCursor cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, query);
         while (cursor.hasNext()) {
-            log.info(cursor.next().toString());
+            log.info(cursor.next().toJson());
         }
-        cursor.close();
+
+        // 4. Pagination
+        cursor = dataDemo.paginate(DB_NAME, TABLE_NAME, 20, 3);
+        log.info("results found");
+        while (cursor.hasNext()) {
+            log.info(cursor.next().toJson());
+        }
 
     }
 
-    private static DBObject buildDBObject() {
-        return BasicDBObjectBuilder.start().add("firstName", "Harshvardhan").add("lastName", "Dadhich").get();
+    private static Document buildDBObject() {
+        return new Document().append("firstName", "harsh").append("lastName", "dadhich").append("age", "27");
     }
 
-    private static List<DBObject> orderedBulkWriteOperation() throws InterruptedException {
+    private static List<Document> orderedBulkWriteOperation() throws InterruptedException {
 
-        List<DBObject> toReturn = new ArrayList<>();
+        List<Document> toReturn = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
 
-            toReturn.add(new BasicDBObject("anotherField", i + 1));
-            Thread.sleep(100L);
+            toReturn.add(new Document().append("firstName", "some guy").append("anotherField", i * i));
+            //Thread.sleep(100L);
         }
 
-        for (int i = 0; i < 100; i++) {
-
-            toReturn.add(new BasicDBObject("oneLast", i + 1));
-            Thread.sleep(100L);
-        }
         // we could handle find as well as remove in bulk operations
         /*builder.find(new BasicDBObject("_id", 1)).updateOne(new BasicDBObject("$set", new BasicDBObject("x", 2)));
         builder.find(new BasicDBObject("_id", 2)).removeOne();
@@ -62,11 +61,4 @@ public class Application {
 
         return toReturn;
     }
-
-
-    private static DBObject buildQuery() {
-
-        return new BasicDBObject("lastName", "Dadhich");
-    }
-
 }
