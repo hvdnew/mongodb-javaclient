@@ -23,7 +23,7 @@ public class Application {
         dataDemo.insertData(DB_NAME, TABLE_NAME, dbObject);
 
         // 2. Bulk operations
-        dataDemo.bulkOperations(DB_NAME, TABLE_NAME, orderedBulkWriteOperation());
+        dataDemo.bulkOperations(DB_NAME, TABLE_NAME, multipleObjects());
 
         // 3. Finding data
         MongoCursor<Document> cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, new Document().append("lastName", "Dadhich"));
@@ -45,19 +45,13 @@ public class Application {
         return new Document().append("firstName", "harsh").append("lastName", "dadhich").append("age", "27");
     }
 
-    private static List<Document> orderedBulkWriteOperation() throws InterruptedException {
+    private static List<Document> multipleObjects() throws InterruptedException {
 
         List<Document> toReturn = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
 
             toReturn.add(new Document().append("firstName", "some guy").append("anotherField", i * i));
-            //Thread.sleep(100L);
         }
-
-        // we could handle find as well as remove in bulk operations
-        /*builder.find(new BasicDBObject("_id", 1)).updateOne(new BasicDBObject("$set", new BasicDBObject("x", 2)));
-        builder.find(new BasicDBObject("_id", 2)).removeOne();
-        builder.find(new BasicDBObject("_id", 3)).replaceOne(new BasicDBObject("_id", 3).append("x", 4));*/
 
         return toReturn;
     }
