@@ -19,7 +19,7 @@ class DataDemo {
         collection.insertOne(dbObject);
     }
 
-    void bulkOperations(String dbName, String tableName, List<Document> objectsToInsert) throws UnknownHostException {
+    void insertMany(String dbName, String tableName, List<Document> objectsToInsert) throws UnknownHostException {
 
         // Accessing the database
         MongoCollection<Document> collection = getCollection(dbName, tableName);

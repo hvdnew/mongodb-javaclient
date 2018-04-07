@@ -18,31 +18,36 @@ public class Application {
     public static void main(String... args) throws Exception {
 
         // 1. Insert Data
+        log.info("#####################INSERTING DATA#####################");
         DataDemo dataDemo = new DataDemo();
         Document dbObject = buildDBObject();
         dataDemo.insertData(DB_NAME, TABLE_NAME, dbObject);
 
         // 2. Bulk operations
-        dataDemo.bulkOperations(DB_NAME, TABLE_NAME, multipleObjects());
+        log.info("#####################INSERTING BULK DATA#####################");
+        dataDemo.insertMany(DB_NAME, TABLE_NAME, multipleObjects());
 
         // 3. Finding data
-        MongoCursor<Document> cursor = dataDemo.queryData(DB_NAME, TABLE_NAME, new Document().append("lastName", "Dadhich"));
+        log.info("#####################FINDING DATA#####################");
+        MongoCursor<Document> cursor = dataDemo.queryData(DB_NAME, TABLE_NAME,
+                new Document().append("lastName", "Dadhich"));
         log.info("results found");
         while (cursor.hasNext()) {
             log.info(cursor.next().toJson());
         }
 
         // 4. Pagination
-        cursor = dataDemo.paginate(DB_NAME, TABLE_NAME, 20, 3);
+        log.info("#####################PAGINATED DATA#####################");
+        MongoCursor<Document> paginatedCursor = dataDemo.paginate(DB_NAME, TABLE_NAME, 20, 3);
         log.info("results found");
-        while (cursor.hasNext()) {
-            log.info(cursor.next().toJson());
+        while (paginatedCursor.hasNext()) {
+            log.info(paginatedCursor.next().toJson());
         }
 
     }
 
     private static Document buildDBObject() {
-        return new Document().append("firstName", "harsh").append("lastName", "dadhich").append("age", "27");
+        return new Document().append("firstName", "harsh").append("lastName", "Dadhich").append("age", "27");
     }
 
     private static List<Document> multipleObjects() throws InterruptedException {
